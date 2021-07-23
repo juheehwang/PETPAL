@@ -59,7 +59,7 @@ public class ShareFreeController {
 	
 	
 	/** 
-	 * 페이징 처리 & 전체 셀렉트
+	 * 페이징 처리 및 전체 게시글/ keyword 게시글/ 분류된 게시글 조회해오는 메소드
 	 * @param shareDTO
 	 * @param model
 	 * @param response
@@ -81,23 +81,39 @@ public class ShareFreeController {
 		for(Cookie cookie : cookies) {
 			if(!cookie.getName().equals("sharefree")) {
 				
-				cookie = new Cookie("sharefree",null); // 쿠키생성
+				// 무료나눔 페이지 전용 쿠기생성 (쿠키이름: sharefree)
+				cookie = new Cookie("sharefree",null); 
+				
+				// 쿠키 코멘트 생성
 				cookie.setComment("무료나눔 쿠키 생성");
+				
+				// 사용자에게 해당 쿠키를 추가
 				response.addCookie(cookie);
 				
 			}
-			if(!(cookie.getName().equals("AdCookie"))) {		// 광고
+			
+			//광고 전용 쿠키
+			if(!(cookie.getName().equals("AdCookie"))) {	
     			
-    			cookie = new Cookie("AdCookie",null); 		// sharInfoAd라는 이름의 쿠키 생성
-    			cookie.setComment("AdCookie 게시글 조회 확인");	// 해당 쿠키가 어떤 용도인지 커멘트
-    			response.addCookie(cookie);						// 사용자에게 해당 쿠키를 추가
+				// sharInfoAd라는 이름의 쿠키 생성
+    			cookie = new Cookie("AdCookie",null); 	
+    			
+    			// 해당 쿠키가 어떤 용도인지 커멘트
+    			cookie.setComment("AdCookie 게시글 조회 확인");	
+    			
+    			// 사용자에게 해당 쿠키를 추가
+    			response.addCookie(cookie);						
     			
     		}
 		}
-		//전체 리스트 호출
+		
+		//전체 리스트 호출 분기문 시작
 		if(category == null) {
+			
+			// 게시글 개수 카운트 구하기
 			int totalCount = sharefreeService.selectTotalCount();
 			
+			// 페이징 처리
 			if(nowPage == null && cntPerPage == null) {
 				nowPage = "1";
 				cntPerPage = "10";
@@ -121,9 +137,15 @@ public class ShareFreeController {
 	    	model.addAttribute("keyword", null);
 	    	model.addAttribute("randomAdNonPlace", adService.selectRandomAdNonPlace());
 	    	
-		} else if(category.equals("S")) { // 무료 나눔중 리스트 호출
+		} 
+		
+		// 무료 나눔중 리스트 호출 분기분 시작
+		else if(category.equals("S")) { 
+			
+			// 나눔중 게시글 개수 구하기
     		int totalIngCount = sharefreeService.selectTotalIngCount();
     		
+    		// 페이징 처리
     		if(nowPage == null && cntPerPage == null) {
     			nowPage = "1";
     			cntPerPage = "12";
@@ -146,10 +168,15 @@ public class ShareFreeController {
         	model.addAttribute("shareIngList", shareIngList);
         	model.addAttribute("randomAdNonPlace", adService.selectRandomAdNonPlace());
     		
-    	} else if(category.equals("C")) {  // 무료 나눔 리스트 호출
+    	} 
+		
+		// 무료 나눔완료 리스트 호출 분기문 시작
+		else if(category.equals("C")) {  
     		
+			// 나눔 완료 게시글 개수  구하기
     		int totalComCount = sharefreeService.selectTotalComCount();
     		
+    		// 페이징 처리
     		if(nowPage == null && cntPerPage == null) {
     			nowPage = "1";
     			cntPerPage = "12";
@@ -174,10 +201,14 @@ public class ShareFreeController {
         	model.addAttribute("randomAdNonPlace", adService.selectRandomAdNonPlace());
         	
     	} 
+		
+		// 검색 keyword 조회 리스트 호출 분기문
 		if(category == null && keyword != null) {
     			
+			    // 검색 키워드 글 개수 구하기
     			int totalkeywordCount = sharefreeService.selectTotalSearchCount(keyword);
 	    		
+    			// 페이징 처리
 	    		if(nowPage == null && cntPerPage == null) {
 	    			nowPage = "1";
 	    			cntPerPage = "12";
