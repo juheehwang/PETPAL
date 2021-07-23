@@ -16,6 +16,18 @@ public interface ShareFreeService {
 
 	List<ShareFreeDTO> selectShareFreeList(HashMap<String, Object> map);
 
+	int selectTotalIngCount();
+	
+	List<ShareFreeDTO> selectIngList(HashMap<String, Object> map1);
+	
+	int selectTotalComCount();
+	
+	List<ShareFreeDTO> selectComList(HashMap<String, Object> map2);
+	
+	int selectTotalSearchCount(String keyword);
+	
+	List<ShareFreeDTO> selectSearchList(HashMap<String, Object> map3);
+	
 	int insertNewBoard(ShareFreeDTO shareDTO);
 
 	int insertNewBoth(ShareFreeDTO shareDTO, PictureDTO picture);
@@ -32,17 +44,6 @@ public interface ShareFreeService {
 
 	int updateBoth(ShareFreeDTO shareDTO, PictureDTO picture);
 
-	int selectTotalIngCount();
-
-	List<ShareFreeDTO> selectIngList(HashMap<String, Object> map1);
-
-	int selectTotalComCount();
-
-	List<ShareFreeDTO> selectComList(HashMap<String, Object> map2);
-
-	int selectTotalSearchCount(String keyword);
-
-	List<ShareFreeDTO> selectSearchList(HashMap<String, Object> map3);
 
 
 
