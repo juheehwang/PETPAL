@@ -2,6 +2,7 @@ package com.nobanryeo.petpal.user.adopt.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -195,6 +196,7 @@ public class AdoptServiceImpl implements AdoptService {
 	}
 
 
+
 	/**
 	 * 입양 완료 상태값 변경 메소드
 	 */
@@ -246,6 +248,7 @@ public class AdoptServiceImpl implements AdoptService {
 		}
 		return result;
 	}
+
 
 
 

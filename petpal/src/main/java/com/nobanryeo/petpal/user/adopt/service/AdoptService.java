@@ -1,6 +1,7 @@
 package com.nobanryeo.petpal.user.adopt.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.nobanryeo.petpal.user.dto.AdoptDTO;
 import com.nobanryeo.petpal.user.dto.AdoptPictureManageDTO;
@@ -32,7 +33,7 @@ public interface AdoptService {
 
 	int insertMessage(MessageTableDTO messageDTO);
 
-	List<AdoptPictureManageDTO> selectSearchList(String keyword);
+	List<AdoptPictureManageDTO> selectSearchList(String string);
 
 	int putAdoptStatus(int status);
 

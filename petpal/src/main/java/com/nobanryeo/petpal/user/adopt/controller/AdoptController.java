@@ -20,6 +20,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,32 +72,14 @@ public class AdoptController {
 		return "user/adopt/adoptPage";
 	}
 	
-	/**
-	 * @param mv
-	 * @param response
-	 * @return JSON 방법으로 adoptList 호출
-	 */
-	@GetMapping("adoptData")
-	@ResponseBody
-	public ModelAndView selectAdoptMain(ModelAndView mv, HttpServletResponse response) {
+	@GetMapping("adopt/detail/{boardCode}")
+	public String getBoardDetail(Model model, @PathVariable("boardCode") int code){
 		
-		response.setContentType("application/json; charset=utf-8");
-		List<AdoptPictureManageDTO> adoptList = new ArrayList<>();
-		adoptList=adoptService.selectAdoptList();
+		model.addAttribute("boardCode", code);
 		
-//		System.out.println("adoptList in controller: "+adoptService.selectAdoptList());
-		System.out.println("controller: "+adoptList);
+		return "user/adopt/adoptDetail";
 		
-		Gson gson = new GsonBuilder().setPrettyPrinting()
-				.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-				.serializeNulls().disableHtmlEscaping().create();
-	
-		mv.addObject("adoptList", gson.toJson(adoptList));
-		mv.setViewName("jsonView");
-		
-		return mv;
 	}
-
 	/**
 	 * @return terms page 호출
 	 */
@@ -224,29 +207,7 @@ public class AdoptController {
 	}
 	
 	
-	@GetMapping("adopt/detail/{boardCode}")
-	public String selectAdoptDetail(@PathVariable("boardCode") int code, Model model) {
-		
-		AdoptDTO adoptDetail = new AdoptDTO();
-		adoptDetail=adoptService.selectAdoptDetail(code);
-		
-		
-		List<PictureDTO> pictureList = new ArrayList<>();
-		pictureList = adoptService.selectPictureList(code);
-		
-		System.out.println(adoptDetail);
-		
-		for(PictureDTO picture:pictureList) {
-			System.out.println(picture);
-		}
-		
-		model.addAttribute("adoptDetail", adoptDetail);
-		model.addAttribute("pictureList", pictureList);
-		
-		
-		
-		return "user/adopt/adoptDetail";
-	}
+	
 	
 	/**
 	 * 해당하는 보드코드로 댓글 리스트 조회메소드
@@ -380,28 +341,6 @@ public class AdoptController {
 		
 		return "redirect:/user/adopt/detail/"+boardCode;
 		
-	}
-	
-	@GetMapping("adopt/search/{search}")
-	@ResponseBody
-	public ModelAndView selectKeyword(@PathVariable("search") String keyword, ModelAndView mv, HttpServletResponse response) {
-		
-	
-		response.setContentType("application/json; charset=utf-8");
-		
-		List<AdoptPictureManageDTO> adoptSearchList = new ArrayList<>();
-		adoptSearchList=adoptService.selectSearchList(keyword);
-		System.out.println("controllter sort: "+adoptSearchList );
-		
-		Gson gson = new GsonBuilder().setPrettyPrinting()
-				.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-				.serializeNulls().disableHtmlEscaping().create();
-	
-		mv.addObject("adoptSearchList", gson.toJson(adoptSearchList));
-	
-		mv.setViewName("jsonView");
-		
-		return mv;
 	}
 	
 	@GetMapping("adopt/update")

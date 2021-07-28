@@ -84,16 +84,14 @@
 					};
 					
 					console.log(rsearch);
-					
 					$j3("#adoptlistList").empty();
 					
 					$j3.ajax({
-						url:"adopt/search/"+decodeURIComponent(rsearch,"UTF-8"),
+						url:"/petpal/api/adopt/"+decodeURIComponent(rsearch,"UTF-8"),
 						type:"GET",
 						success: function(data,status,xhr){
-							const adoptSearchList1 = JSON.parse(data.adoptSearchList);
-		     				adoptSearchList = _.uniq(adoptSearchList1, 'boardCode');
-							
+		     				adoptSearchList = _.uniq(data, 'boardCode');
+							console.log(adoptSearchList);
 
                         	$j3("#adoptlistList").empty();
                         	$j3("#pagination").empty();
@@ -181,10 +179,10 @@
                                             $j3(document).ready(function(){
 										     		console.log("adoptPage select script");
 										     		$j3.ajax({
-										     			url:"/petpal/user/adoptData",
+										     			url:"/petpal/api/adopt",
+										     			dataType:'json',
 										     			success:function(data,status,xhr){
-										     				adoptList1 = JSON.parse(data.adoptList);
-										     				adoptList = _.uniq(adoptList1, 'boardCode');
+										     				adoptList = _.uniq(data, 'boardCode');
 										     				totalCount = Math.ceil(adoptList.length/12);
 										     				
 										     				for(i=0; i< adoptList.length; i++){

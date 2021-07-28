@@ -258,6 +258,13 @@
 			<artifactId>commons-email</artifactId>
 			<version>1.2</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-databind</artifactId>
+		    <version>2.12.3</version>
+		</dependency>
+		
 		
 		<!-- 관리자 메인페이지 그래프 api 1 -->
 		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
