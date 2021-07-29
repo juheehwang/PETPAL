@@ -23,6 +23,7 @@ public class SwaggerConfiguration implements WebMvcConfigurer {
 		return new Docket(DocumentationType.SWAGGER_2).select()
 				.apis(RequestHandlerSelectors.basePackage("com.nobanryeo.petpal.user.adopt.api"))
 				.paths(PathSelectors.any()).build()
+				.enableUrlTemplating(true)
 				.apiInfo(apiInfo());
 		
 	}

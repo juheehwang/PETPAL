@@ -186,11 +186,6 @@ public class AdoptController {
 		
 		}
 		
-		/* Exception 핸들러 동작 확인 */
-//		boolean test = true;
-//		if(test) {
-//			throw new MemberRegistException("당신은 우리와 함께 할 수 없습니다.");
-//		}
 		int result = adoptService.registAdopt(adopt, pictureList);
 		
 		System.out.println("controller result : "+ result);
@@ -207,72 +202,6 @@ public class AdoptController {
 	}
 	
 	
-	
-	
-	/**
-	 * 해당하는 보드코드로 댓글 리스트 조회메소드
-	 * @param code
-	 * @param mv
-	 * @param response
-	 * @return
-	 */
-	@GetMapping("adopt/detail/select/reply/{boardCode}")
-	@ResponseBody
-	public ModelAndView selectreplyList(@PathVariable("boardCode") int code, ModelAndView mv, HttpServletResponse response) {
-		
-		response.setContentType("application/json; charset=utf-8");
-		List<AdoptReplyDTO> replyList = new ArrayList<>();
-		replyList=adoptService.selectReplyList(code);
-		
-		System.out.println("controller of reply: "+replyList);
-		
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").setPrettyPrinting()
-				.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY)
-				.serializeNulls().disableHtmlEscaping().create();
-	
-		mv.addObject("replyList", gson.toJson(replyList));
-		mv.setViewName("jsonView");
-		
-		return mv;
-	}
-	
-	/**
-	 * 해당하는 아이디로 특정보드코드에 댓글 등록 메소드
-	 * @param mv
-	 * @param replyContent
-	 * @param boardCode
-	 * @param request
-	 * @param response
-	 * @param session
-	 * @return
-	 */
-	@PostMapping("adopt/detail/insert/reply")
-	@ResponseBody
-	public ModelAndView insertReply(ModelAndView mv, String replyContent, String boardCode, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-		
-		response.setContentType("application/json; charset=utf-8");
-	
-		
-		AdoptReplyDTO replyDTO = new AdoptReplyDTO();
-		int userCode = ((UserInfoDTO)session.getAttribute("loginUser")).getCode();
-		boardCode = request.getParameter("boardCode");
-		System.out.println(boardCode);
-		replyDTO.setBoardCode((int)(Integer.parseInt(boardCode)));
-		replyDTO.setReplyContent(request.getParameter("replyContent"));
-		replyDTO.setReplyUserCode(userCode);
-		System.out.println("ajax 요청 도착: "+replyContent+","+ boardCode);
-		
-		int result = adoptService.insertReply(replyDTO);
-		
-		if(result>0) {
-			mv.addObject("message", "success");
-			
-		}else {
-			mv.addObject("message", "fail");
-		}
-		mv.setViewName("jsonView");
-		return mv;
-	}
 	
 	@PostMapping("adopt/insert/report")
 	public String insertReport(Model model, HttpServletRequest request, HttpSession session, FreeBoardReportDTO boardreportDTO, AdoptReplyDTO adoptreplyDTO) {

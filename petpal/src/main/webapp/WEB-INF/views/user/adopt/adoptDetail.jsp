@@ -156,14 +156,10 @@
 
         <script src="${ pageContext.servletContext.contextPath }/resources/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
        	<script src="https://kit.fontawesome.com/4978ce16d0.js" crossorigin="anonymous"></script>
-       	
-       <!-- 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-       	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-       	 -->
-       	 <script type="text/javascript"src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-       	 <script>
+       	<script type="text/javascript"src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+       	<script>
           var $j3 = jQuery.noConflict();
-       </script>
+        </script>
     </head>
 
     <jsp:include page="../common/userHeader.jsp"/>
@@ -181,7 +177,7 @@
         </div><!--End off Preloader -->
 
 
- 		   <img src="${ pageContext.servletContext.contextPath }/resources/images/back.png" onclick="location.href='${ pageContext.servletContext.contextPath }/user/adopt'" style="width:50px; height:50px; float: right; margin-bottom: 0px; margin-right:180px;">
+ 		<img src="${ pageContext.servletContext.contextPath }/resources/images/back.png" onclick="location.href='${ pageContext.servletContext.contextPath }/user/adopt'" style="width:50px; height:50px; float: right; margin-bottom: 0px; margin-right:180px;">
         <div class="culmn">
             <!--Home page style-->
             <!--Home Sections-->
@@ -345,15 +341,14 @@
 								     		var code = '<c:out value="${requestScope.adoptDetail.boardCode}"/>';
 								     	
 								     			$j3.ajax({
-								     			url:"select/reply/"+code,
+								     			url:"api/reply/"+code,
 								     			type:"GET",
 								     			success:function(data,status,xhr){
-								     				const replyList = JSON.parse(data.replyList);
 								     				/* debugger; */
-								     				console.table(replyList);
-								     				console.log(replyList.length);
+								     				console.table(data);
+								     				console.log(data.length);
 								     				output='';
-								     				if(replyList.length == 0){
+								     				if(data.length == 0){
 							     						output += '<tr>';
 								     					output += '<td style="text-align: center; border:none;">'+' '+'</td>';
 							     						output += '<td style="border:none;">'+'</td>';
@@ -362,7 +357,7 @@
 								     					output += '</tr>';
 							     					}
 								     				
-								     				$j3.each(replyList,function(i, item){
+								     				$j3.each(data,function(i, item){
 								     					
 								     					var deleteYN = this.replyDeleteYN;
 								     					var reportYN = this.reportYN;
@@ -403,7 +398,6 @@
 								                
 								     				
 								     			},error:function(xhr,status,error){
-								     				alert("에러 발생~삐뽀~");
 								     				console.log(error);
 								     			}
 								     		});
@@ -448,7 +442,7 @@
 				     		
 				     	
 				     		$j3.ajax({
-			     			url:"insert/reply",
+			     			url:"api/reply",
 			     			type:"POST",
 		    				data:{"replyContent": content,
 		    					"boardCode": code},

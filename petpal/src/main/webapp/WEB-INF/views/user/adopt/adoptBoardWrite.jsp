@@ -75,6 +75,10 @@
 
     <body data-spy="scroll" data-target=".navbar-collapse">
    <jsp:include page="../common/userHeader.jsp"/>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+          var $j3 = jQuery.noConflict();
+          </script>
 
         <!-- Preloader -->
         <div id="loading">
@@ -101,7 +105,8 @@
                 
             </section> <!--End off Home Sections-->
             <section id="menutable" class="menutable">
-	            		<form action="${ pageContext.servletContext.contextPath }/user/adopt/write" method="post" enctype="multipart/form-data" id="adoptWrite">
+	            		<form id="adoptInfo">
+	            		<input type="hidden" name = "userCode" id="userCode" value = ${sessionScope.loginUser.code} }>
 						<div style="width: 55%;  margin: 0px auto;  margin-bottom: 50px; ">
 		                	<table style="width: 80%; margin-left: 30px; margin-top: 20px; margin-bottom: 20px; ">
 		                	<div style="color: #45B99C; font-size: 25px; font-weight: 600; float:left; ">동물의 정보는 어떻게 되나요?
@@ -125,19 +130,19 @@
 								</tr>
 								<tr>
 									<td>나이</td>
-									<td><input type="text" name="adoptAge" id="ownerName" style="width: 80px; background: #F1FAF8;" required>  살</td>
+									<td><input type="text" name="adoptAge" id="adoptAge" style="width: 80px; background: #F1FAF8;" required>  살</td>
 								</tr>
 								<tr>
 									<td>몸무게</td>
-									<td><input type="text" name="adoptWeight" id="ownerName" style="width: 80px; background: #F1FAF8;" required>  KG</td>
+									<td><input type="text" name="adoptWeight" id="adoptWeight" style="width: 80px; background: #F1FAF8;" required>  KG</td>
 								</tr>
 								<tr>
 									<td>색상</td>
-									<td><input type="text" name="adoptColor" id="ownerName" style="width: 180px; background: #F1FAF8;" required>  </td>
+									<td><input type="text" name="adoptColor" id="adoptColor" style="width: 180px; background: #F1FAF8;" required>  </td>
 								</tr>
 								<tr>
 									<td>사는곳</td>
-									<td><input type="text" name="address" id="ownerName" style="width: 180px; background: #F1FAF8;" placeholder="예시) 서울시 강남구" required></td>
+									<td><input type="text" name="address" id="address" style="width: 180px; background: #F1FAF8;" placeholder="예시) 서울시 강남구" required></td>
 								</tr>
 								<tr>
 									<td>소개</td>
@@ -150,7 +155,7 @@
 									<td>사진</td>
 									<td>
 										<div class="mb-3" style="border-color: none;">
-										  <input type="file" name="picture" id="file" multiple="multiple" style="width: 300px; background: #F1FAF8;" onchange="fileLimit(this)" required>
+										  <input type="file" name="picture" id="file" onchange="fileChange(this);" multiple="multiple" style="width: 300px; background: #F1FAF8;" onchange="fileLimit(this)" required>
 										</div>
 									</td>
 								</tr>
@@ -163,15 +168,15 @@
 								
 								<tr>
 									<td>연락처</td>
-									<td><input type="text" name="adoptPhone" id="ownerPhone" style="width: 240px; background: #F1FAF8;" placeholder=" 예시) 010-1234-5678" required></td>
+									<td><input type="text" name="adoptPhone" id="adoptPhone" style="width: 240px; background: #F1FAF8;" placeholder=" 예시) 010-1234-5678" required></td>
 								</tr>
 								<tr>
 									<td>주의사항</td>
-									<td><input type="text" name="adoptCaution" id="ownerPhone" style="width: 330px; background: #F1FAF8;" placeholder=" 예시) 밤 8시이후는 문자로 부탁드립니다." required></td>
+									<td><input type="text" name="adoptCaution" id="adoptCaution" style="width: 330px; background: #F1FAF8;" placeholder=" 예시) 밤 8시이후는 문자로 부탁드립니다." required></td>
 								</tr>
 									
 						</table>
-                    	<div style="margin: 0px auto; text-align: center; margin-bottom: 50px"><button type="submit" id="registAdopt">글올리기</button></div>
+                    	<div style="margin: 0px auto; text-align: center; margin-bottom: 50px"><button type="button" id="registAdopt" onclick="submitAdoptWrite();">글올리기</button></div>
 	                	</div>
 	                	</form>
             </section>
@@ -181,6 +186,9 @@
             <jsp:include page="../../common/banner.jsp"/>
             
             <script>
+            
+            var imageData = {};
+            
        			function fileLimit(fl){
        				if(fl.files.length == 0){
        					alert("0개 이상의 파일이 입력 되었습니다. 최소 한장은 넣어주세요!");
@@ -193,6 +201,57 @@
        				};
        			};
             	
+       			function fileChange(a){
+       				
+       				var formdata = new FormData();
+       				
+       				//사진이 여러개일 수 있어서 반복문 실행
+       				for(var i =0; i<a.files.length;i++){
+       					formdata.append('file', a.files[i]);
+       				}
+					
+       				$j3.ajax({
+						data : formdata,
+						type : "POST",
+						url : "${ pageContext.servletContext.contextPath }/api/adopt/changeImg",
+						contentType : false,
+						processData : false,
+						enctype:'multipart/form-data',
+						success : function(data) {
+			            	imageData = data;
+							console.log(imageData);
+						}
+					});
+       			}
+       			
+       			function submitAdoptWrite(){
+       				var formMap = new Map();
+       				var formData = $j3(this).serializeObject();
+       				
+       				formMap.set("formData", formData);
+       				formMap.set("imageData", imageData);
+       				
+       				//JsonStringify로 변환할때 Map 객체 불가 => Array로 변환 필수 
+       				var finalData = JSON.stringify(Array.from(formMap));
+       				console.log(finalData);
+       				
+       				$j3.ajax({
+						data : finalData,
+						type : "POST",
+						dataType:'json',
+						url : "${ pageContext.servletContext.contextPath }/api/insert/adopBoard",
+						contentType : 'application/json; charset=utf-8',
+						processData : false,
+						success : function(data) {
+			            	if(data.httpStatus=="OK"){
+			            		alert("게시글 등록이 완료되었습니다.");
+			            	}else{
+			            		alert("게시글 등록에 실패하였습니다. 다시 등록 부탁드리겠습니다.");
+			            	}
+						}
+					});
+       				
+       			}
             </script>
 
             <!-- 푸터 -->
