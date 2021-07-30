@@ -4,19 +4,25 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -85,11 +91,12 @@ public class AdoptApiController {
 		
 		List<PictureDTO> pictureList = new ArrayList<>();
 		pictureList = adoptService.selectPictureList(boardCode);
+
+		Map<String,Object> boardDetail = new HashMap<>();
+		boardDetail.put("adoptDetail", adoptDetail);
+		boardDetail.put("pictureList", pictureList);
 		
-		System.out.println(adoptDetail);
-		
-		response.add("adoptDetail", adoptDetail);
-		response.add("pictureList", pictureList);
+		response.add("boardDetail", boardDetail);
 		
 		return response;
 	}
@@ -144,13 +151,81 @@ public class AdoptApiController {
 		return jsonArr.toString();
 	}
 	
-	@ApiOperation("adopt 게시글 저장 전 파일 처리")
-	@PostMapping(value="insert/adopBoard", produces = "application/json; charset=utf8")
-	public Response insertAdoptInfo(@RequestBody AdoptPictureManageDTO adoptPictureDTO) {
+	@ApiOperation("adopt 게시글 쓰기")
+	@PostMapping(value="adopt", produces = "application/json; charset=utf8")
+	public Response insertAdoptInfo(@RequestBody Map<String, Object> formDataMap) {
 		
-		System.out.println(adoptPictureDTO);
+		Response response = new Response();
+		System.out.println("여기오나" + formDataMap);
+		System.out.println(formDataMap.get("imageData").getClass().getName());
+		Map<String,String> adopt = (LinkedHashMap<String,String>)formDataMap.get("formData");
+		List<LinkedHashMap<String,String>> imageData = (List<LinkedHashMap<String, String>>) formDataMap.get("imageData");
+		
+		AdoptDTO adoptDTO = new AdoptDTO();
+		adoptDTO.setAdoptAge(Integer.parseInt(adopt.get("adoptAge")));
+		adoptDTO.setAddress(adopt.get("address"));
+		adoptDTO.setAdoptBreed(adopt.get("adoptBreed"));
+		adoptDTO.setAdoptCaution(adopt.get("adoptCaution"));
+		adoptDTO.setAdoptColor(adopt.get("adoptColor"));
+		adoptDTO.setAdoptGender(adopt.get("adoptGender"));
+		adoptDTO.setAdoptIntroduce(adopt.get("adoptIntroduce"));
+		adoptDTO.setAdoptPhone(adopt.get("adoptPhone"));
+		adoptDTO.setAdoptWeight(Integer.parseInt(adopt.get("adoptWeight")));
+		adoptDTO.setDogOrcat(adopt.get("dogOrcat"));
+		adoptDTO.setUserCode(Integer.parseInt(adopt.get("userCode")));
+		
+		List<PictureDTO> pictureList = new ArrayList<>();
+		
+		
+		
+		for(int i =0; i<imageData.size();i++) {
+			
+			Map<String,String> file= imageData.get(i);
+
+			System.out.println("for문안의 file: "+ file);
+
+			
+			PictureDTO pictureDTO = new PictureDTO();
+			pictureDTO.setPictureName(file.get("originFileName"));
+			pictureDTO.setPictureDeleteYN("N");
+			pictureDTO.setPictureURL(file.get("filePath"));
+			pictureDTO.setPictureNewName(file.get("saveName"));
+			pictureDTO.setPictureUtilPath(file.get("url"));
+			
+			pictureList.add(pictureDTO);
+		}
+		System.out.println("pictureList: "+pictureList);
+		
+		int result = adoptService.registAdopt(adoptDTO, pictureList);
+
+		Map<String,Object> finalResultMap = new HashMap<String, Object>();
+		finalResultMap.put("adoptDTO", adoptDTO);
+		finalResultMap.put("pictureList",pictureList);
+		
+		if(result>0) {
+		response.add("result",finalResultMap);
+		}else {
+			response.add("result", "error");
+		}
+		return response;
+	}
+	
+	@ApiOperation("adopt 게시글 수정")
+	@PutMapping("adopt")
+	public Response revisedBoard() {
+		
 		Response response = new Response();
 		
 		return response;
 	}
+	
+	@ApiOperation("adopt 게시글 삭제")
+	@DeleteMapping("adopt")
+	public Response deleteBoard() {
+		
+		Response response = new Response();
+		
+		return response;
+	}
+	
 }

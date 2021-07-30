@@ -22,6 +22,7 @@ public class AdoptDTO {
 	private String userNickname;
 	
 	
+	
 	public AdoptDTO() {}
 
 

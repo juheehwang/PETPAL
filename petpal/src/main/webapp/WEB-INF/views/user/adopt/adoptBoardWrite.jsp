@@ -71,14 +71,13 @@
 
         <script src="${ pageContext.servletContext.contextPath }/resources/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     	
+	   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	   <script>
+         var $j3 = jQuery.noConflict();
+       </script>
     </head>
 
-    <body data-spy="scroll" data-target=".navbar-collapse">
    <jsp:include page="../common/userHeader.jsp"/>
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script>
-          var $j3 = jQuery.noConflict();
-          </script>
 
         <!-- Preloader -->
         <div id="loading">
@@ -105,7 +104,7 @@
                 
             </section> <!--End off Home Sections-->
             <section id="menutable" class="menutable">
-	            		<form id="adoptInfo">
+	            		<form id="adoptInfo" method="post">
 	            		<input type="hidden" name = "userCode" id="userCode" value = ${sessionScope.loginUser.code} }>
 						<div style="width: 55%;  margin: 0px auto;  margin-bottom: 50px; ">
 		                	<table style="width: 80%; margin-left: 30px; margin-top: 20px; margin-bottom: 20px; ">
@@ -222,29 +221,51 @@
 							console.log(imageData);
 						}
 					});
-       			}
+       			};
+       			
+       			//serializeObject function을 사용하기위해 만든 함수
+       			$j3.fn.serializeObject = function() {
+					var o = {};
+					var a = this.serializeArray();
+					$.each(a, function() {
+						if (o[this.name]) {
+							if (!o[this.name].push) {
+								o[this.name] = [o[this.name]];
+							}
+							o[this.name].push(this.value || '');
+						} else {
+							o[this.name] = this.value || '';
+						}
+					});
+					return o;
+				};
        			
        			function submitAdoptWrite(){
        				var formMap = new Map();
-       				var formData = $j3(this).serializeObject();
+       				var jsonObject = {};
+       				var formData = $j3('#adoptInfo').serializeObject();
        				
        				formMap.set("formData", formData);
        				formMap.set("imageData", imageData);
        				
+       				formMap.forEach((value,key)=>{
+       					jsonObject[key] = value;
+       				});
        				//JsonStringify로 변환할때 Map 객체 불가 => Array로 변환 필수 
-       				var finalData = JSON.stringify(Array.from(formMap));
+       				var finalData = JSON.stringify(jsonObject);
        				console.log(finalData);
        				
        				$j3.ajax({
 						data : finalData,
 						type : "POST",
 						dataType:'json',
-						url : "${ pageContext.servletContext.contextPath }/api/insert/adopBoard",
+						url : "${ pageContext.servletContext.contextPath }/api/adopt",
 						contentType : 'application/json; charset=utf-8',
 						processData : false,
 						success : function(data) {
-			            	if(data.httpStatus=="OK"){
+			            	if(data.result !="error"){
 			            		alert("게시글 등록이 완료되었습니다.");
+			            		loaction.href='${ pageContext.servletContext.contextPath }/user/adopt';
 			            	}else{
 			            		alert("게시글 등록에 실패하였습니다. 다시 등록 부탁드리겠습니다.");
 			            	}
