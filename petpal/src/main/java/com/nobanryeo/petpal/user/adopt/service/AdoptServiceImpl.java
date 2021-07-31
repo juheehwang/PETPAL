@@ -249,6 +249,13 @@ public class AdoptServiceImpl implements AdoptService {
 		return result;
 	}
 
+	//게시글 삭제 메소드
+	@Override
+	public int deleteBoard(int boardCode) {
+		int result = adoptMapper.deleteBorad(boardCode);
+		return result;
+	}
+
 
 
 

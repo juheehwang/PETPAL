@@ -211,20 +211,26 @@ public class AdoptApiController {
 	}
 	
 	@ApiOperation("adopt 게시글 수정")
-	@PutMapping("adopt")
-	public Response revisedBoard() {
+	@PutMapping("adopt/{boardCode}")
+	public Response revisedBoard(@ApiParam(value="수정할 게시글 번호", required = true,type="integer")@PathVariable int boardCode) {
 		
 		Response response = new Response();
+		
 		
 		return response;
 	}
 	
 	@ApiOperation("adopt 게시글 삭제")
-	@DeleteMapping("adopt")
-	public Response deleteBoard() {
+	@DeleteMapping("adopt/{baordCode}")
+	public Response deleteBoard(@ApiParam(value="삭제할 게시글 번호", required = true,type="integer")@PathVariable int boardCode) {
 		
 		Response response = new Response();
-		
+		int result = adoptService.deleteBoard(boardCode);
+		if(result>0) {
+			response.add("result", "success");
+		}else {
+			response.add("result", "error");
+		}
 		return response;
 	}
 	

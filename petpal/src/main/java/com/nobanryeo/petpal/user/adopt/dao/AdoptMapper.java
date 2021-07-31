@@ -50,5 +50,7 @@ public interface AdoptMapper {
 
 	List<PictureDTO> selectPicture(PictureDTO pictureDTO);
 
+	int deleteBorad(int boardCode);
+
 	
 }

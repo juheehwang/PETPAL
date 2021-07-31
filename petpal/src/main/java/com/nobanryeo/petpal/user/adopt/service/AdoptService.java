@@ -41,4 +41,6 @@ public interface AdoptService {
 
 	int updatetAdopt(AdoptDTO adopt, List<PictureDTO> pictureList);
 
+	int deleteBoard(int boardCode);
+
 }

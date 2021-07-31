@@ -404,4 +404,10 @@
 		   WHERE M.BOARD_CODE = #{boardCode}
 	  </update>
 	  
+	  <update id="deleteBorad" parameterType="int">
+	     UPDATE ADOPT_BOARD
+	        SET ADOPT_DELETE_YN = 'Y'
+	      WHERE BOARD_CODE = #{boardCode}
+	  </update>
+	  
   </mapper>
