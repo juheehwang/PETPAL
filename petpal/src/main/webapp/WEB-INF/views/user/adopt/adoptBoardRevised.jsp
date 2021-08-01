@@ -67,7 +67,10 @@
 			  cursor:pointer;
 			}
         </style>
-    	
+    	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	    <script>
+         var $j3 = jQuery.noConflict();
+        </script>
     </head>
    <jsp:include page="../common/userHeader.jsp"/>
 
@@ -96,7 +99,9 @@
                 
             </section> <!--End off Home Sections-->
             <section id="menutable" class="menutable">
-	            		<form action="${ pageContext.servletContext.contextPath }/user/adopt/update/${requestScope.adoptDetail.boardCode}" method="post" enctype="multipart/form-data" id="adoptWrite">
+            
+	            		<form id="adoptRevised">
+	            		<input type="hidden" name = "userCode" id="userCode" value = ${sessionScope.loginUser.code}>
 						<div style="width: 55%;  margin: 0px auto;  margin-bottom: 50px; ">
 		                	<table style="width: 80%; margin-left: 30px; margin-top: 20px; margin-bottom: 20px; ">
 		                	<div style="color: #45B99C; font-size: 25px; font-weight: 600; float:left; ">동물의 정보는 어떻게 되나요?
@@ -149,7 +154,7 @@
 									<td>사진</td>
 									<td>
 										<div class="mb-3" style="border-color: none;">
-										  <input type="file" name="picture" id="file" multiple="multiple" style="width: 300px; background: #F1FAF8;" onchange="fileLimit(this)" required>
+										  <input type="file" name="picture" id="file" multiple="multiple" style="width: 300px; background: #F1FAF8;" onchange="fileChange(this)" required>
 										</div>
 									</td>
 								</tr>
@@ -170,7 +175,7 @@
 								</tr>
 									
 						</table>
-                    	<div style="margin: 0px auto; text-align: center; margin-bottom: 50px"><button type="submit" id="registAdopt">입양글 수정하기</button></div>
+                    	<div style="margin: 0px auto; text-align: center; margin-bottom: 50px"><button type="button" onclick="submitAdoptWrite();" id="revisedAdopt">입양글 수정하기</button></div>
 	                	</div>
 	                	</form>
             </section>
@@ -180,18 +185,93 @@
             <jsp:include page="../../common/banner.jsp"/>
             
             <script>
-       			function fileLimit(fl){
-       				if(fl.files.length == 0){
+				function fileChange(a){
+					
+					if(a.files.length == 0){
        					alert("0개 이상의 파일이 입력 되었습니다. 최소 한장은 넣어주세요!");
-       					fl.style.backgourndColor='red';
-       					fl.value="";
+       					a.style.backgourndColor='red';
+       					a.value="";
        				};
-       				if(fl.files.length > 4){
+       				if(a.files.length > 4){
        					alert("4장 초과로 사진이 첨부되었습니다. 4장만 추가해주세요!");
-       					fl.reset();
+       					a.files.reset();
        				};
+       				
+       				if(a.files.length >0 && a.files.length<5){
+	       				var formdata = new FormData();
+	       				
+	       				//사진이 여러개일 수 있어서 반복문 실행
+	       				for(var i =0; i<a.files.length;i++){
+	       					formdata.append('file', a.files[i]);
+	       				}
+						
+	       				$j3.ajax({
+							data : formdata,
+							type : "POST",
+							url : "${ pageContext.servletContext.contextPath }/api/adopt/changeImg",
+							contentType : false,
+							processData : false,
+							enctype:'multipart/form-data',
+							success : function(data) {
+				            	imageData = data;
+								console.log(imageData);
+							}
+						});
+       				}
        			};
-            	
+       			
+       			//serializeObject function을 사용하기위해 만든 함수
+       			$j3.fn.serializeObject = function() {
+					var o = {};
+					var a = this.serializeArray();
+					$.each(a, function() {
+						if (o[this.name]) {
+							if (!o[this.name].push) {
+								o[this.name] = [o[this.name]];
+							}
+							o[this.name].push(this.value || '');
+						} else {
+							o[this.name] = this.value || '';
+						}
+					});
+					return o;
+				};
+       			
+       			function submitAdoptWrite(){
+       				var boardCode = ${requestScope.boardCode};
+       				var formMap = new Map();
+       				var jsonObject = {};
+       				var formData = $j3('#adoptRevised').serializeObject();
+       				
+       				formMap.set("formData", formData);
+       				formMap.set("imageData", imageData);
+       				
+       				//Map 객체로 보낼수 없어서 Array로 변경 (Array. 방법은 이중 배열을 만들어서 controller에서 받기힘듬)
+       				formMap.forEach((value,key)=>{
+       					jsonObject[key] = value;
+       				});
+       				//JsonStringify로 변환할때 Map 객체 불가 => Array로 변환 필수 
+       				var finalData = JSON.stringify(jsonObject);
+       				console.log(finalData);
+       				
+       				$j3.ajax({
+						data : finalData,
+						type : "PUT",
+						dataType:'json',
+						url : "${ pageContext.servletContext.contextPath }/api/adopt/"+boardCode,
+						contentType : 'application/json; charset=utf-8',
+						processData : false,
+						success : function(data) {
+			            	if(data.result !="error"){
+			            		alert("게시글 수정이 완료되었습니다.");
+			            		loaction.href='${ pageContext.servletContext.contextPath }/user/adopt';
+			            	}else{
+			            		alert("게시글 수정에 실패하였습니다. 다시 등록 부탁드리겠습니다.");
+			            	}
+						}
+					});
+       				
+       			}
             </script>
 
             <!-- 푸터 -->

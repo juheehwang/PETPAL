@@ -62,10 +62,10 @@ public class AdoptApiController {
 	@GetMapping("adopt")
 	public Response boardList() {
 		
-			Response response  = new Response();
-			response.add("boardTotalList", adoptService.selectAdoptList());
-			return response;
-		}
+		Response response  = new Response();
+		response.add("boardTotalList", adoptService.selectAdoptList());
+		return response;
+	}
 
 	@ApiOperation("adopt 전체 리스트 중 지역 검색 결과 리스트 조회")
 	@GetMapping("adopt/search/{search}")
@@ -137,8 +137,6 @@ public class AdoptApiController {
 				jsonObject.addProperty("filePath", fileRoot);
 				jsonObject.addProperty("utilPath", utilPath);
 				
-				System.out.println(jsonObject.toString());
-				
 			} catch (IOException e) {
 				FileUtils.deleteQuietly(targetFile);	//저장된 파일 삭제
 				jsonObject.addProperty("responseCode", "error");
@@ -156,8 +154,6 @@ public class AdoptApiController {
 	public Response insertAdoptInfo(@RequestBody Map<String, Object> formDataMap) {
 		
 		Response response = new Response();
-		System.out.println("여기오나" + formDataMap);
-		System.out.println(formDataMap.get("imageData").getClass().getName());
 		Map<String,String> adopt = (LinkedHashMap<String,String>)formDataMap.get("formData");
 		List<LinkedHashMap<String,String>> imageData = (List<LinkedHashMap<String, String>>) formDataMap.get("imageData");
 		
@@ -170,7 +166,7 @@ public class AdoptApiController {
 		adoptDTO.setAdoptGender(adopt.get("adoptGender"));
 		adoptDTO.setAdoptIntroduce(adopt.get("adoptIntroduce"));
 		adoptDTO.setAdoptPhone(adopt.get("adoptPhone"));
-		adoptDTO.setAdoptWeight(Integer.parseInt(adopt.get("adoptWeight")));
+		adoptDTO.setAdoptWeight(Double.parseDouble(adopt.get("adoptWeight")));
 		adoptDTO.setDogOrcat(adopt.get("dogOrcat"));
 		adoptDTO.setUserCode(Integer.parseInt(adopt.get("userCode")));
 		
@@ -212,10 +208,66 @@ public class AdoptApiController {
 	
 	@ApiOperation("adopt 게시글 수정")
 	@PutMapping("adopt/{boardCode}")
-	public Response revisedBoard(@ApiParam(value="수정할 게시글 번호", required = true,type="integer")@PathVariable int boardCode) {
+	public Response revisedBoard(@ApiParam(value="수정할 게시글 번호", required = true,type="integer")@PathVariable int boardCode, @RequestBody Map<String, Object> formDataMap) {
 		
 		Response response = new Response();
+
+		Map<String,String> adopt = (LinkedHashMap<String,String>)formDataMap.get("formData");
+		List<LinkedHashMap<String,String>> imageData = (List<LinkedHashMap<String, String>>) formDataMap.get("imageData");
 		
+		PictureDTO pictureDTO = new PictureDTO();
+		AdoptDTO adoptDTO = new AdoptDTO();
+		pictureDTO.setBoardCode(boardCode);
+		adoptDTO.setBoardCode(boardCode);
+		
+		int updateResult = 0;
+		
+		// 게시글 수정전 사진 삭제 (N-> Y)
+		int deletePictureResult = adoptService.deletePicture(pictureDTO);
+		List<PictureDTO> pictureList = new ArrayList<>();
+		
+		if(deletePictureResult>0) {
+			
+		// 게시글 수정 시작 (사진포함)
+			adoptDTO.setAdoptAge(Integer.parseInt(adopt.get("adoptAge")));
+			adoptDTO.setAddress(adopt.get("address"));
+			adoptDTO.setAdoptBreed(adopt.get("adoptBreed"));
+			adoptDTO.setAdoptCaution(adopt.get("adoptCaution"));
+			adoptDTO.setAdoptColor(adopt.get("adoptColor"));
+			adoptDTO.setAdoptGender(adopt.get("adoptGender"));
+			adoptDTO.setAdoptIntroduce(adopt.get("adoptIntroduce"));
+			adoptDTO.setAdoptPhone(adopt.get("adoptPhone"));
+			adoptDTO.setAdoptWeight(Double.parseDouble(adopt.get("adoptWeight")));
+			adoptDTO.setDogOrcat(adopt.get("dogOrcat"));
+			adoptDTO.setUserCode(Integer.parseInt(adopt.get("userCode")));
+			
+			
+			
+			for(int i =0; i<imageData.size();i++) {
+				
+				Map<String,String> file= imageData.get(i);
+
+				pictureDTO.setPictureName(file.get("originFileName"));
+				pictureDTO.setPictureDeleteYN("N");
+				pictureDTO.setPictureURL(file.get("filePath"));
+				pictureDTO.setPictureNewName(file.get("saveName"));
+				pictureDTO.setPictureUtilPath(file.get("url"));
+				
+				pictureList.add(pictureDTO);
+			}
+		
+			 updateResult = adoptService.updatetAdopt(adoptDTO, pictureList);
+			 
+		}
+		Map<String,Object> finalResultMap = new HashMap<String, Object>();
+		finalResultMap.put("adoptDTO", adoptDTO);
+		finalResultMap.put("pictureList",pictureList);
+		
+		if(updateResult>0) {
+		response.add("result",finalResultMap);
+		}else {
+			response.add("result", "error");
+		}
 		
 		return response;
 	}

@@ -105,7 +105,7 @@
             </section> <!--End off Home Sections-->
             <section id="menutable" class="menutable">
 	            		<form id="adoptInfo" method="post">
-	            		<input type="hidden" name = "userCode" id="userCode" value = ${sessionScope.loginUser.code} }>
+	            		<input type="hidden" name = "userCode" id="userCode" value = ${sessionScope.loginUser.code}>
 						<div style="width: 55%;  margin: 0px auto;  margin-bottom: 50px; ">
 		                	<table style="width: 80%; margin-left: 30px; margin-top: 20px; margin-bottom: 20px; ">
 		                	<div style="color: #45B99C; font-size: 25px; font-weight: 600; float:left; ">동물의 정보는 어떻게 되나요?
