@@ -129,7 +129,7 @@ public class AdoptApiController {
 			
 			try {
 				InputStream fileStream = multipartFile.get(i).getInputStream();
-				FileUtils.copyInputStreamToFile(fileStream, targetFile);	//파일 저장
+				FileUtils.copyInputStreamToFile(fileStream, targetFile);	// 파일 서버에 저장
 				jsonObject.addProperty("url", "/petpal/resources/uploadFiles/"+savedFileName);
 				jsonObject.addProperty("responseCode", "success");
 				jsonObject.addProperty("originFileName", originalFileName);
@@ -144,7 +144,6 @@ public class AdoptApiController {
 			}
 			jsonArr.add(jsonObject);
 		}
-		System.out.println("jsonArr"+jsonArr.toString());
 		
 		return jsonArr.toString();
 	}
@@ -172,15 +171,10 @@ public class AdoptApiController {
 		
 		List<PictureDTO> pictureList = new ArrayList<>();
 		
-		
-		
 		for(int i =0; i<imageData.size();i++) {
 			
 			Map<String,String> file= imageData.get(i);
 
-			System.out.println("for문안의 file: "+ file);
-
-			
 			PictureDTO pictureDTO = new PictureDTO();
 			pictureDTO.setPictureName(file.get("originFileName"));
 			pictureDTO.setPictureDeleteYN("N");
@@ -190,7 +184,6 @@ public class AdoptApiController {
 			
 			pictureList.add(pictureDTO);
 		}
-		System.out.println("pictureList: "+pictureList);
 		
 		int result = adoptService.registAdopt(adoptDTO, pictureList);
 
@@ -217,6 +210,8 @@ public class AdoptApiController {
 		
 		PictureDTO pictureDTO = new PictureDTO();
 		AdoptDTO adoptDTO = new AdoptDTO();
+		
+		// 해당하는 게시글의 번호를 DTO에 담아서 보내기위해 set으로 값을 넣어준다.
 		pictureDTO.setBoardCode(boardCode);
 		adoptDTO.setBoardCode(boardCode);
 		
@@ -241,8 +236,6 @@ public class AdoptApiController {
 			adoptDTO.setDogOrcat(adopt.get("dogOrcat"));
 			adoptDTO.setUserCode(Integer.parseInt(adopt.get("userCode")));
 			
-			
-			
 			for(int i =0; i<imageData.size();i++) {
 				
 				Map<String,String> file= imageData.get(i);
@@ -257,8 +250,8 @@ public class AdoptApiController {
 			}
 		
 			 updateResult = adoptService.updatetAdopt(adoptDTO, pictureList);
-			 
 		}
+		
 		Map<String,Object> finalResultMap = new HashMap<String, Object>();
 		finalResultMap.put("adoptDTO", adoptDTO);
 		finalResultMap.put("pictureList",pictureList);
@@ -277,6 +270,7 @@ public class AdoptApiController {
 	public Response deleteBoard(@ApiParam(value="삭제할 게시글 번호", required = true,type="integer")@PathVariable int boardCode) {
 		
 		Response response = new Response();
+		
 		int result = adoptService.deleteBoard(boardCode);
 		if(result>0) {
 			response.add("result", "success");
