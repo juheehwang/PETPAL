@@ -1,9 +1,9 @@
 # PETPAL
-made by Team project
-revised by juhee Hwang
+### made by Team project
+#### revised by juhee Hwang
 
-Implementation by Juhee
+##### Implementation by Juhee
 
-AdoptBoard - Made by Rest API
-MissingBoard
-FreeShare Board - MVC2 Pattern
+*AdoptBoard - Made by Rest API
+*MissingBoard
+*FreeShare Board - MVC2 Pattern
