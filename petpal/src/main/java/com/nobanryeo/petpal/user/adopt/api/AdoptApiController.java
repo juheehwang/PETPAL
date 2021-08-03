@@ -105,7 +105,6 @@ public class AdoptApiController {
 	@PostMapping(value="adopt/changeImg", produces = "application/json")
 	@ResponseBody
 	public String convertImageFile(@RequestParam("file") List<MultipartFile> multipartFile,HttpServletRequest request) {
-		
 		//Json으로 리턴하기위해 리스트 객체 생성
 		JsonArray jsonArr = new JsonArray();
 		
@@ -126,7 +125,6 @@ public class AdoptApiController {
 			String utilPath = "resources\\uploadFiles\\"+savedFileName; // JSP에서 사용할 파일명
 			
 			File targetFile = new File(fileRoot +"\\"+ savedFileName);	
-			
 			try {
 				InputStream fileStream = multipartFile.get(i).getInputStream();
 				FileUtils.copyInputStreamToFile(fileStream, targetFile);	// 파일 서버에 저장
@@ -136,7 +134,6 @@ public class AdoptApiController {
 				jsonObject.addProperty("saveName", savedFileName);
 				jsonObject.addProperty("filePath", fileRoot);
 				jsonObject.addProperty("utilPath", utilPath);
-				
 			} catch (IOException e) {
 				FileUtils.deleteQuietly(targetFile);	//저장된 파일 삭제
 				jsonObject.addProperty("responseCode", "error");
@@ -144,7 +141,6 @@ public class AdoptApiController {
 			}
 			jsonArr.add(jsonObject);
 		}
-		
 		return jsonArr.toString();
 	}
 	
@@ -153,6 +149,7 @@ public class AdoptApiController {
 	public Response insertAdoptInfo(@RequestBody Map<String, Object> formDataMap) {
 		
 		Response response = new Response();
+		
 		Map<String,String> adopt = (LinkedHashMap<String,String>)formDataMap.get("formData");
 		List<LinkedHashMap<String,String>> imageData = (List<LinkedHashMap<String, String>>) formDataMap.get("imageData");
 		
@@ -192,7 +189,7 @@ public class AdoptApiController {
 		finalResultMap.put("pictureList",pictureList);
 		
 		if(result>0) {
-		response.add("result",finalResultMap);
+			response.add("result",finalResultMap);
 		}else {
 			response.add("result", "error");
 		}

@@ -142,6 +142,12 @@
 	  	 , #{address}
 	  	 )
 	  	 
+	  	 <selectKey order="AFTER" keyProperty="boardCode" resultType="int">
+	  	     SELECT
+	  	            ADOPT_BOARD_SEQ.CURRVAL
+	  	       FROM DUAL
+	  	 </selectKey>
+	  	 
 	  </insert>
 	  
 	  <insert id="registPicture" parameterType="PictureDTO">
@@ -158,12 +164,6 @@
 	  	, #{pictureUtilPath}
 	  	)
   	</insert>
-  	
-  	<select id="selectBoardCode" resultType="_int">
-  		SELECT
-  		       ADOPT_BOARD_SEQ.CURRVAL
-  		  FROM DUAL
-  	</select>
   	
   	<insert id="registSubTable" parameterType="PictureDTO">
 	  <selectKey keyProperty="pictureCode" order="BEFORE" resultType="int">

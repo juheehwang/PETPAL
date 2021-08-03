@@ -154,7 +154,7 @@
 									<td>사진</td>
 									<td>
 										<div class="mb-3" style="border-color: none;">
-										  <input type="file" name="picture" id="file" onchange="fileChange(this);" multiple="multiple" style="width: 300px; background: #F1FAF8;" onchange="fileLimit(this)" required>
+										  <input type="file" name="picture" id="file" onchange="fileChange(this);" multiple="multiple" style="width: 300px; background: #F1FAF8;" required>
 										</div>
 									</td>
 								</tr>
@@ -188,39 +188,41 @@
             
             var imageData = {};
             
-       			function fileLimit(fl){
-       				if(fl.files.length == 0){
-       					alert("0개 이상의 파일이 입력 되었습니다. 최소 한장은 넣어주세요!");
-       					fl.style.backgourndColor='red';
-       					fl.value="";
-       				};
-       				if(fl.files.length > 4){
-       					alert("4장 초과로 사진이 첨부되었습니다. 4장만 추가해주세요!");
-       					fl.reset();
-       				};
-       			};
-            	
        			function fileChange(a){
        				
        				var formdata = new FormData();
        				
-       				//사진이 여러개일 수 있어서 반복문 실행
-       				for(var i =0; i<a.files.length;i++){
-       					formdata.append('file', a.files[i]);
-       				}
-					
-       				$j3.ajax({
-						data : formdata,
-						type : "POST",
-						url : "${ pageContext.servletContext.contextPath }/api/adopt/changeImg",
-						contentType : false,
-						processData : false,
-						enctype:'multipart/form-data',
-						success : function(data) {
-			            	imageData = data;
-							console.log(imageData);
-						}
-					});
+       				// 사진 4장 limit로  4장 이상 이하 분기문 처리
+       				if(a.files.length == 0){
+       					alert("0개 이상의 파일이 입력 되었습니다. 최소 한장은 넣어주세요!");
+       				};
+       				
+       				if(a.files.length > 4){
+       					alert("4장 초과로 사진이 첨부되었습니다. 4장만 추가해주세요!");
+       					$j3("#file").val('');
+       				};
+       				
+       				if(a.files.length>0 && a.files.length<5){
+       				
+	       				//사진이 여러개일 수 있어서 반복문 실행
+	       				for(var i =0; i<a.files.length;i++){
+	       					formdata.append('file', a.files[i]);
+	       				}
+						
+	       				$j3.ajax({
+							data : formdata,
+							type : "POST",
+							url : "${ pageContext.servletContext.contextPath }/api/adopt/changeImg",
+							contentType : false,
+							processData : false,
+							enctype:'multipart/form-data',
+							success : function(data) {
+								
+								// imageData는 전역변수
+				            	imageData = data;
+							}
+						});
+       				};
        			};
        			
        			//serializeObject function을 사용하기위해 만든 함수
@@ -240,20 +242,23 @@
 					return o;
 				};
        			
+				// 게시글 최종 저장 function
        			function submitAdoptWrite(){
+					
        				var formMap = new Map();
        				var jsonObject = {};
        				var formData = $j3('#adoptInfo').serializeObject();
        				
+					// input tag에 있는 글과 json type으로 있는 image 정보를 한번에 Map에 담는다
        				formMap.set("formData", formData);
        				formMap.set("imageData", imageData);
        				
        				formMap.forEach((value,key)=>{
        					jsonObject[key] = value;
        				});
+       				
        				//JsonStringify로 변환할때 Map 객체 불가 => Array로 변환 필수 
        				var finalData = JSON.stringify(jsonObject);
-       				console.log(finalData);
        				
        				$j3.ajax({
 						data : finalData,
@@ -263,16 +268,21 @@
 						contentType : 'application/json; charset=utf-8',
 						processData : false,
 						success : function(data) {
-			            	if(data.result !="error"){
+							if(data.message=="OK"){
+			            		console.log(data);
+			            		var boardCode = data.data.result.adoptDTO.boardCode;
+			            		
 			            		alert("게시글 등록이 완료되었습니다.");
-			            		loaction.href='${ pageContext.servletContext.contextPath }/user/adopt';
+			            		//저장 후 상세페이지로 이동
+			            		location.href="${ pageContext.servletContext.contextPath }/user/adopt/detail/"+boardCode;
 			            	}else{
 			            		alert("게시글 등록에 실패하였습니다. 다시 등록 부탁드리겠습니다.");
 			            	}
 						}
 					});
        				
-       			}
+       			};
+       			
             </script>
 
             <!-- 푸터 -->

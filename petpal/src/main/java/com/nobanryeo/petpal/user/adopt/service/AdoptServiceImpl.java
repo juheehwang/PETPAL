@@ -47,12 +47,10 @@ public class AdoptServiceImpl implements AdoptService {
 		int adoptResult = adoptMapper.registerAdopt(adopt);
 		System.out.println("adoptResult in service:"+ adoptResult);
 		
-		int boardCodeValue = adoptMapper.selectBoardCode();
-		
 		int pictureResult = 0;
 		
 		for(PictureDTO picture:pictureList) {
-			picture.setBoardCode(boardCodeValue);
+			picture.setBoardCode(adopt.getBoardCode());
 			pictureResult += adoptMapper.registPicture(picture);
 			
 			System.out.println("pictureResult in service:"+ pictureResult);
