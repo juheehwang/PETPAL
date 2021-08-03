@@ -4,6 +4,6 @@
 
 ##### Implementation by Juhee
 
-*AdoptBoard - Made by Rest API
-*MissingBoard
-*FreeShare Board - MVC2 Pattern
+*AdoptBoard - Made by Rest API  
+*MissingBoard  
+*FreeShare Board - MVC2 Pattern  
