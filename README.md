@@ -5,7 +5,7 @@
 ##### Implementation by Juhee<br>
 *AdoptBoard - Made by Rest API  
 *MissingBoard  
-*FreeShare Board - MVC2 Pattern  
+*FreeShare Board - Spring MVC2 Pattern  
 <br>
 <br>
 Documentation of PETPAL<br>
