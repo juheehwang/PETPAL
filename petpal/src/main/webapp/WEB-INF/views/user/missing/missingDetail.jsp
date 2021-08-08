@@ -559,6 +559,7 @@
 						    content: {
 						      title: '강아지/고양이를 찾아주세요!!',
 						      description: '#실종 #강아지 #고양이 #신고 #목격 #찾아주세요!',
+						      //서버가 로컬서버가 아닐시 게시글 사진으로 변경 가능 => 현재는 로컬서버라 정해진 이미지로 카카오톡 공유됨
 						      imageUrl:
 						    	 'https://flexible.img.hani.co.kr/flexible/normal/970/739/imgdb/original/2020/0507/20200507502335.jpg'
 						    ,
@@ -660,7 +661,6 @@
 							location.href = '#reportComment';
                    		}
                    		 $j3("#btn_report_submit").click(function(){
-	                   			console.log("여기오나?");
 	                   			var content = $j3("#reportContent_board").val(); 
 	                   			var reply = $j3("#reportContent_reply").val();
 	                   			var Bcode = ${requestScope.missingDetail.boardCode};

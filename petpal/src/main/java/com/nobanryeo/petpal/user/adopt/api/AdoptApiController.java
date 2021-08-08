@@ -62,8 +62,12 @@ public class AdoptApiController {
 	@GetMapping("adopt")
 	public Response boardList() {
 		
+		// Response 객체 생성 - 요청 데이터를 담아서 전달하기 위해 호출시마다 생성
 		Response response  = new Response();
+		
+		// 게시글 전체 리스트를 담는다
 		response.add("boardTotalList", adoptService.selectAdoptList());
+		
 		return response;
 	}
 
@@ -75,6 +79,7 @@ public class AdoptApiController {
 		
 		List<AdoptPictureManageDTO> adoptSearchList = adoptService.selectSearchList(search);
 		
+		// 조회된 게시글 리스트를 response객체에 담는다
 		response.add("adoptSearchList", adoptSearchList);
 		
 		return response;
@@ -85,13 +90,13 @@ public class AdoptApiController {
 	public Response boardDetail(@ApiParam(value="상세조회할 게시글 번호", required = true,type="integer")@PathVariable int boardCode) {
 		
 		Response response = new Response();
-		AdoptDTO adoptDetail = new AdoptDTO();
-		adoptDetail=adoptService.selectAdoptDetail(boardCode);
 		
-		
-		List<PictureDTO> pictureList = new ArrayList<>();
-		pictureList = adoptService.selectPictureList(boardCode);
+		// 각각 조회된 내용을 DTO에 담아서 가져온다
+		AdoptDTO adoptDetail = adoptService.selectAdoptDetail(boardCode);
+		List<PictureDTO> pictureList = adoptService.selectPictureList(boardCode);
 
+		// 두개의 다른 내용을 한번에 보내기 위해 Map객체에 담는다.
+		// Map을 쓴이유 : 사진인지 게시글인지 확인하기위해 Key에다가 구분 명을 담기위해
 		Map<String,Object> boardDetail = new HashMap<>();
 		boardDetail.put("adoptDetail", adoptDetail);
 		boardDetail.put("pictureList", pictureList);
@@ -150,9 +155,11 @@ public class AdoptApiController {
 		
 		Response response = new Response();
 		
+		//넘어온 데이터를 새로운 객체에 각각 담는다.
 		Map<String,String> adopt = (LinkedHashMap<String,String>)formDataMap.get("formData");
 		List<LinkedHashMap<String,String>> imageData = (List<LinkedHashMap<String, String>>) formDataMap.get("imageData");
 		
+		//DTO에 담아서 DB까지 가려고 DTO 객체 생성
 		AdoptDTO adoptDTO = new AdoptDTO();
 		adoptDTO.setAdoptAge(Integer.parseInt(adopt.get("adoptAge")));
 		adoptDTO.setAddress(adopt.get("address"));
@@ -184,6 +191,7 @@ public class AdoptApiController {
 		
 		int result = adoptService.registAdopt(adoptDTO, pictureList);
 
+		// DB에 저장 후 데이터를 Json에 담아서 보내기위해 Map에 담는다
 		Map<String,Object> finalResultMap = new HashMap<String, Object>();
 		finalResultMap.put("adoptDTO", adoptDTO);
 		finalResultMap.put("pictureList",pictureList);
@@ -249,6 +257,7 @@ public class AdoptApiController {
 			 updateResult = adoptService.updatetAdopt(adoptDTO, pictureList);
 		}
 		
+		
 		Map<String,Object> finalResultMap = new HashMap<String, Object>();
 		finalResultMap.put("adoptDTO", adoptDTO);
 		finalResultMap.put("pictureList",pictureList);
@@ -269,11 +278,13 @@ public class AdoptApiController {
 		Response response = new Response();
 		
 		int result = adoptService.deleteBoard(boardCode);
+		
 		if(result>0) {
 			response.add("result", "success");
 		}else {
 			response.add("result", "error");
 		}
+		
 		return response;
 	}
 	
