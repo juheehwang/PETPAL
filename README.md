@@ -18,16 +18,17 @@
 
 ### Implementation by Juhee<br>
 
-> *AdoptBoard - Made by Rest API  
+> *AdoptBoard - Made by Rest API  <br>
       Rest API Controller -  
       https://github.com/juheehwang/PETPAL/blob/f1a21691de96a30a8d9d10af45c85a234b7845e1/petpal/src/main/java/com/nobanryeo/petpal/user/adopt/api/AdoptApiController.java <br>
   
-> *FreeShare Board - Spring MVC2 Pattern  
+> *FreeShare Board - Spring MVC2 Pattern  <br>
      FreeShare Controller -      
-     https://github.com/juheehwang/PETPAL/blob/f1a21691de96a30a8d9d10af45c85a234b7845e1/petpal/src/main/java/com/nobanryeo/petpal/user/adopt/controller/ShareFreeController.java
+     https://github.com/juheehwang/PETPAL/blob/f1a21691de96a30a8d9d10af45c85a234b7845e1/petpal/src/main/java/com/nobanryeo/petpal/user/adopt/controller/ShareFreeController.java <br>
 
-> *MissingBoard  
-
+> *MissingBoard <br>
+    Missing Controller - 
+    https://github.com/juheehwang/PETPAL/blob/0f28e95a941ea756ac59bc5fbdda45ef315ac2cf/petpal/src/main/java/com/nobanryeo/petpal/user/adopt/controller/MissingController.java <br>
 
 <br>
 Documentation of PETPAL<br>
