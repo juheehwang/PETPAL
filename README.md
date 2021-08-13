@@ -3,6 +3,21 @@
 #### revised by juhee Hwang
 
 ##### Implementation by Juhee<br>
+
+## Tech
+
+- [JAVA] 
+- [Spring Framework] 
+- [Oracle]
+- [Mybatis]
+- [Ajax] 
+- [Express]
+- [Gulp] 
+- [HTML]
+- [CSS]
+- [bootstrap]
+- [jQuery] 
+
 *AdoptBoard - Made by Rest API  
  Rest API Controller - https://github.com/juheehwang/PETPAL/blob/f1a21691de96a30a8d9d10af45c85a234b7845e1/petpal/src/main/java/com/nobanryeo/petpal/user/adopt/api/AdoptApiController.java <br>
   
